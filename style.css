@@ -1,37 +1,60 @@
 :root {
     --primary-blue: #095AA7;
     --primary-white: #FFFAFB;
+    --font-main: "Source Serif 4", serif;
+    --font-heading: "Playfair Display", serif;
+    --transition: 0.3s ease-in-out;
+}
 
-    margin: 0;
-    padding: 0;
-
-    font-family: "Playfair Display";
+body {
+    overflow-y: hidden;
 }
 
 nav {
+    width: 100%;
+    border-bottom: 2px solid black;
+    margin-bottom: 2rem;
     &::before {
+
+    }
+}
+
+#chartContainer {
+    /* Pie chart will be added above the "Net Income $" text field. */
+    border: 2px solid black;
+    border-radius: 10px;
+    grid-area: 1 / 1 / span 2;
+    justify-items: center;
+    & h3 {
+        width: fit-content;
+        padding: 1rem;
+        padding-bottom: 0.25rem;
+        font-family:var(--font-main);
+        border-bottom: 1px solid black;
 
     }
 }
 
 nav ul {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 1rem;
     list-style: none;
+    font-family: var(--font-heading);
 
-    border: 2px solid black;
     padding: 10px;
 
     /* Logo */
-    & .logo {
-        margin-right: 50%;
-    }
 
     /* Section of text anchor links at right of nav */
     & #textclickables {
+        gap:2rem;
         display: flex;
         justify-content: flex-end;
+        & a {
+            text-decoration: none;
+            color: var(--primary-white);
+        }
     }
 }
 
@@ -75,11 +98,6 @@ nav ul li {
 
         /* Create lines between numbers */
         /* DOesn't rlly work rn */
-        &::after {
-            content: '';
-            width: 50px;
-            border: 2px solid black;
-        }
     }
 
     & .active {
@@ -88,18 +106,36 @@ nav ul li {
     }
 }
 
-#chartContainer {
-    border: 2px solid black;
-    border-radius: 20px;
-    grid-area: 1 / 1 / span 2;
-}
-
 /* Input Fields */
 form .inputs {
     /* Want an auto-row here, maybe */
-    /* gap pls */
     display: grid;
-    grid-template: 50px / auto auto
+    grid-template: 50px / auto auto;
+    gap:1rem;
+    padding-bottom:1rem;
+}
+
+h2 {
+    border-bottom:2px solid black;
+    width:fit-content;
+    font-family:var(--font-heading);
+    padding-right:1rem;
+    padding-bottom:0.25rem;
+}
+
+input {
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 0.5rem;
+    height:40px;
+    width: minmax(200px, fit-content);
+    font-family:var(--font-main);
+    font-size: 18px;
+    color: black;
+    & ::placeholder {
+        font-family: var(--font-main);
+        color:rgba(0, 0, 0, 0.5)
+    }
 }
 
 /* For forms */
@@ -116,5 +152,16 @@ form .inputs {
     border-radius: 10px;
 
     width: 80px;
+    height: 40px;
+}
+
+.addinput {
+    background-color: var(--primary-blue);
+    color: var(--primary-white);
+
+    border: 2px solid black;
+    border-radius: 10px;
+
+    width: fit-content;
     height: 40px;
 }
