@@ -1,101 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+        <link rel="stylesheet" href="style.css" />
+        <script type="module" src="./script.js"></script>
+    </head>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li class="logo"><a href="#"></a></li>
+                    <div id="textclickables">
+                        <li class="home"><a href="#">Home</a></li>
+                        <li class="cal"><a href="#">Calculator</a></li>
+                        <li class="about"><a href="#">About</a></li>
+                    </div>
+                </ul>
+            </nav>
+        </header>
 
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li class="logo"><a href="#"></a>
-                </li>
-                <div id="textclickables">
-                    <li class="home"><a href="#">Home</a>
-                    </li>
-                    <li class="cal"><a href="#">Calculator</a>
-                    </li>
-                    <li class="about"><a href="#">About</a>
-                    </li>
-                </div>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <div class="content">
-            <section id="contentContainer">
-                <section class="stepContainer">
-                    <a href="index.html"><button id="stepone" class="active">1</button></a>
-                    <a href="housing.html"><button id="steptwo">2</button></a>
-                    <a href="transportation.html"><button id="stepthree">3</button></a>
-                    <a href="index.html"><button id="stepfour">4</button></a>
-                    <a href="index.html"><button id="stepfive">5</button></a>
-                    <a href="index.html"><button id="stepsix">6</button></a>
-                    <a href="index.html"><button id="stepseven">7</button></a>
-                </section>
-
-                <section id="interactables">
-                    <section id="chartContainer">
-                        <canvas id="piechart"></canvas>
-                        <h3>Net Income $</h3>
-                    </section>
-    
-                    <section id="forms">
-                        <form id="expensesform" class="active" action="">
-                            <h2>Income</h2>
-                            <input type="text" placeholder="Income"> 
-        
-                            <button class="addinput">+ Add Input</button>
-                        </form>
-    
-                        <!-- Idea is to hide forms not active in css; use a class-->
-                        <form action="" class="active">
-                            <h2>Housing</h2>
-                            <!--Add to other forms pls-->
-                            <div class="inputs">
-                                <input type="text" placeholder="Mortage">
-                                <input type="text" placeholder="Insurance">
-                                <input type="text" placeholder="Rent">
-                                <input type="text" placeholder="Utilities">
-                                <input type="text" placeholder="Maintenance">
-                                <input type="text" placeholder="Phone">
-                            </div>
-        
-                            <button class="addinput">+Add Input</button>
-                        </form>
-    
-                        <form action="" class="inactive">
-                            <h2>Eductaion</h2>
-                            <input type="text" placeholder="Tuition">
-                            <input type="text" placeholder="Stundent Loans">
-        
-                            <button class="addinput">+ Add Input</button>
-                        </form>
-    
-                        <form action="" class="inactive">
-                            <h2>Transportation</h2>
-                            <input type="text" placeholder="Car Payment">
-                            <input type="text" placeholder="Insurance">
-                            <input type="text" placeholder="Fuel">
-                            <input type="text" placeholder="Repairs">
-        
-                            <button class="addinput">+ Add Input</button>
-                        </form>
+        <main>
+            <div class="content">
+                <section id="contentContainer">
+                    <section class="stepContainer">
+                        <button id="step-0" class="active">1</button>
+                        <button id="step-1">2</button>
+                        <button id="step-2">3</button>
+                        <button id="step-3">4</button>
+                        <button id="step-4">5</button>
+                        <button id="step-5">6</button>
+                        <button id="step-6">7</button>
                     </section>
 
-                    <!-- Either one button to cycle through steps variable in JS
+                    <section id="interactables">
+                        <section id="chartContainer">
+                            <canvas id="piechart"></canvas>
+                            <h3>Net Income $</h3>
+                        </section>
+
+                        <section id="forms">
+                            <form
+                                id="expensesform"
+                                class="active page-0"
+                                action=""
+                            >
+                                <h2>Income</h2>
+                                <input type="text" placeholder="Income" />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <!-- Idea is to hide forms not active in css; use a class-->
+                            <form action="" class="inactive page-1">
+                                <h2>Housing</h2>
+                                <!--Add to other forms pls-->
+                                <div class="inputs">
+                                    <input type="text" placeholder="Mortage" />
+                                    <input
+                                        type="text"
+                                        placeholder="Insurance"
+                                    />
+                                    <input type="text" placeholder="Rent" />
+                                    <input
+                                        type="text"
+                                        placeholder="Utilities"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Maintenance"
+                                    />
+                                    <input type="text" placeholder="Phone" />
+                                </div>
+
+                                <button class="addinput">+Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-2">
+                                <h2>Transportation</h2>
+                                <input type="text" placeholder="Car Payment" />
+                                <input type="text" placeholder="Insurance" />
+                                <input type="text" placeholder="Fuel" />
+                                <input type="text" placeholder="Repairs" />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-3">
+                                <h2>Education</h2>
+                                <input type="text" placeholder="Tuition" />
+                                <input
+                                    type="text"
+                                    placeholder="Student Loans"
+                                />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-4">
+                                <h2>Personal</h2>
+                                <input type="text" placeholder="Food" />
+                                <input type="text" placeholder="Clothing" />
+                                <input
+                                    type="text"
+                                    placeholder="Entertainment"
+                                />
+                                <input type="text" placeholder="Medical" />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-5">
+                                <h2>Savings</h2>
+                                <input type="text" placeholder="Investments" />
+                                <input
+                                    type="text"
+                                    placeholder="Emergency Fund"
+                                />
+                                <input type="text" placeholder="Retirement" />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-6">
+                                <h2>
+                                    Custom Expenses
+                                    <button class="edit-header">Edit</button>
+                                </h2>
+                                <input type="text" placeholder="Custom" />
+
+                                <button class="addinput">+ Add Input</button>
+                            </form>
+
+                            <form action="" class="inactive page-7">
+                                <h2>Overview</h2>
+                                <table class="needs-wants-savings">
+                                    <thead>
+                                        <th></th>
+                                        <th>Needs (50%)</th>
+                                        <th>Wants (30%)</th>
+                                        <th>Savings (20%)</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Estimated</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Spent</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </section>
+
+                        <!-- Either one button to cycle through steps variable in JS
                     or seperate buttons for each form to go to the next -->
-                    <button id="nextForm">Next</button>
+                        <button id="nextForm">Next</button>
+                    </section>
                 </section>
-            </section>
-        </div>
-    </main>
-</body>
-
+            </div>
+        </main>
+    </body>
 </html>

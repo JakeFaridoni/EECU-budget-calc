@@ -165,3 +165,9 @@ input {
     width: fit-content;
     height: 40px;
 }
+
+.needs-wants-savings {
+    &, & * {
+        border: 1px solid black;
+    }
+}
