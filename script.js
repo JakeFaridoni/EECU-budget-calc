@@ -57,7 +57,7 @@ for (const input of needs) {
     needs_values.set(input.placeholder, 0);
     input.addEventListener(
         'input',
-        /** @type {InputEvent & { target: HTMLInputElement }} */ ({
+        /** @type {InputEvent & { target: HTMLInputElement }} */({
             target
         }) => {
             console.log(needs, needs_values);
@@ -86,7 +86,7 @@ for (const input of savings) {
     savings_values.set(input.placeholder, 0);
     input.addEventListener(
         'input',
-        /** @type {InputEvent & { target: HTMLInputElement }} */ ({
+        /** @type {InputEvent & { target: HTMLInputElement }} */({
             target
         }) => {
             savings_values.set(target.placeholder, +target.value);

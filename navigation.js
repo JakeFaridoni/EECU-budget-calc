@@ -11,6 +11,10 @@ const next = /** @type {HTMLButtonElement} */ (
     document.querySelector('#nextForm')
 );
 
+const addInputButton = /** @type {HTMLButtonElement} */ (
+    document.querySelectorAll('.add-input')
+);
+
 next.addEventListener('click', () => {
     if (current_page >= form_count - 1) {
         return;
@@ -57,3 +61,21 @@ function navigate(page) {
         }
     }
 }
+
+
+// Add Input ((NOT DONE YET))
+addInputButton.forEach(button => {
+    button.addEventListener('click', () => {
+
+        const newInput = document.createElement('input');
+        newInput.type = 'number';
+        newInput.placeholder = 'Custom Input';
+        console.log(newInput);
+        console.log(document.querySelector(`page-${current_page} > .inputs`));
+
+        // const inputs = document.querySelector(`page-${current_page} > .inputs`);
+        // console.log(inputs);
+
+        // inputs.push(newInput);
+    });
+});
