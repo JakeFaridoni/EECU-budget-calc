@@ -1,3 +1,5 @@
+// JS To switch between pages
+
 let current_page = 0;
 
 const jumpto_section = /** @type {HTMLElement} */ (
