@@ -1,13 +1,18 @@
 :root {
     --primary-blue: #095AA7;
-    --primary-white: #FFFAFB;
+    --primary-white: #ffffff;
     --font-main: "Source Serif 4", serif;
     --font-heading: "Playfair Display", serif;
     --transition: 0.3s ease-in-out;
 }
 
+*{
+    
+}
+
 body {
     overflow-y: hidden;
+    background-color: var(--primary-white);
 }
 
 nav {
@@ -28,6 +33,7 @@ button:hover {
     border-radius: 10px;
     grid-area: 1 / 1 / span 2;
     justify-items: center;
+    background-color: var(--primary-white);
 
     & h3 {
         width: fit-content;
@@ -211,11 +217,39 @@ input {
 }
 
 .needs-wants-savings {
-
-    &,
+    background-color: black;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 25em;
+    height: 7.5em;
     & * {
-        border: 1px solid black;
+        margin: -2px;
+        background-color: var(--primary-white);
     }
+
+    
+}
+
+thead:not(:first-child){
+        color: var(--primary-white);
+        background-color: var(--primary-blue);
+    }
+
+th:first-child{
+    border-top-left-radius: 9px;
+}
+
+th:last-child{
+    border-top-right-radius: 9px;
+}
+
+#BLCorner{
+    border-bottom-left-radius: 9px;
+
+}
+
+#BRCorner{
+    border-bottom-right-radius: 9px;
 }
 
 .edit-header {
