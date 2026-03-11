@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="./script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -40,18 +40,19 @@
             </section>
             <section id="interactables">
                 <section id="chartContainer">
-                    <canvas id="piechart"></canvas>
+                    <canvas id="chartCanvas"></canvas>
                     <h3>Net Income $</h3>
-                    <p id="netIncome">$0.00</p>
+                    <p id="netIncomeHolder">$<span id="netIncome">000.00</span></p>
                 </section>
                 <section id="forms">
                     <form id="expensesform" class="active page-0" action="">
-                        <h2>Income</h2>
+                        <h2>Career</h2>
                         <section class="form-inputs">
-                            <div class="inputs">
-                                <input type="text" placeholder="Income" />
-                            </div>
+                            <select name="careers" id="career-list">
+                                <option value="default">Select Career</option>
+                            </select>
                             <button class="addinput">+Add Input</button>
+                            <span id="grossSalary"></span>
                         </section>
                     </form>
                     <!-- Idea is to hide forms not active in css; use a class-->
@@ -61,7 +62,7 @@
                         <section class="form-inputs">
                             <div class="inputs">
                                 <input type="text" class="need-input" placeholder="Mortage" />
-                                <input type="text" class="need-input" placeholder="Insurance" />
+                                <input type="text" class="need-input" placeholder="House Insurance" />
                                 <input type="text" class="need-input" placeholder="Rent" />
                                 <input type="text" class="need-input" placeholder="Utilities" />
                                 <input type="text" class="need-input" placeholder="Maintenance" />
@@ -75,7 +76,7 @@
                         <section class="form-inputs">
                             <div class="inputs">
                                 <input type="text" class="need-input" placeholder="Car Payment" />
-                                <input type="text" class="need-input" placeholder="Insurance" />
+                                <input type="text" class="need-input" placeholder="Car Insurance" />
                                 <input type="text" class="need-input" placeholder="Fuel" />
                                 <input type="text" class="need-input" placeholder="Repairs" />
                             </div>
