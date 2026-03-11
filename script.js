@@ -3,7 +3,6 @@ import './navigation.js';
 //Const List
 const salary = document.getElementById('grossSalary');
 let income = parseFloat(salary.value) || 0;
-const income_input = document.querySelector('input[placeholder="Income"]');
 const table = document.querySelector('table.needs-wants-savings');
 const netIncome = document.querySelector("#netIncome");
 const estimated = table.querySelector('tbody > tr');
@@ -16,60 +15,73 @@ const maintenance = document.querySelector('input[placeholder="Maintenance"]');
 const houseInsurance = document.querySelector('input[placeholder="House Insurance"]');
 const utilities = document.querySelector('input[placeholder="Utilities"]');
 const phone = document.querySelector('input[placeholder="Phone"]');
-const housingTotal = parseFloat(mortage.value || 0) + parseFloat(rent.value || 0) + parseFloat(maintenance.value || 0) + parseFloat(houseInsurance.value || 0) + parseFloat(utilities.value || 0) + parseFloat(phone.value || 0);
+let housingTotal = 0;
 
 //Transportation Variables
 const carPayment = document.querySelector('input[placeholder="Car Payment"]');
 const fuel = document.querySelector('input[placeholder="Fuel"]');
 const carInsurance = document.querySelector('input[placeholder="Car Insurance"]');
 const repairs = document.querySelector('input[placeholder="Repairs"]');
-const transportationTotal = parseFloat(carPayment.value || 0) + parseFloat(fuel.value || 0) + parseFloat(carInsurance.value || 0) + parseFloat(repairs.value || 0);
+let transportationTotal = 0;
 
 //Education Variables
 const tuition = document.querySelector('input[placeholder="Tuition"]');
 const studentLoans = document.querySelector('input[placeholder="Student Loans"]');
-const educationTotal = parseFloat(tuition.value || 0) + parseFloat(studentLoans.value || 0);
+let educationTotal = 0;
 
 //Personal Variables
 const food = document.querySelector('input[placeholder="Food"]');
 const entertainment = document.querySelector('input[placeholder="Entertainment"]');
 const clothing = document.querySelector('input[placeholder="Clothing"]');
 const medical = document.querySelector('input[placeholder="Medical"]');
-const personalTotal = parseFloat(food.value || 0) + parseFloat(entertainment.value || 0) + parseFloat(clothing.value || 0) + parseFloat(medical.value || 0);
+let personalTotal = 0;
 
 //Savings Variables
 const investments = document.querySelector('input[placeholder="Investments"]');
 const retirement = document.querySelector('input[placeholder="Retirement"]');
 const emergencyFund = document.querySelector('input[placeholder="Emergency Fund"]');
-const savingsTotal = parseFloat(investments.value || 0) + parseFloat(retirement.value || 0) + parseFloat(emergencyFund.value || 0);
+let savingsTotal = 0;
 
 const customExpenses = document.querySelectorAll('input[placeholder="Custom"]');
 
 addEventListener('input', () => {
-    income = +income_input.value;
     // 50-30-20 split
     estimated.children.item(1).textContent = (income * 0.5).toFixed(2);
     estimated.children.item(2).textContent = (income * 0.3).toFixed(2);
     estimated.children.item(3).textContent = (income * 0.2).toFixed(2);
-    netIncome.textContent = `$${Math.floor((Number(income_input.value))).toFixed(2)}`;
+
+    // find totals
+    housingTotal = parseFloat(mortage.value || 0) + parseFloat(rent.value || 0) + parseFloat(maintenance.value || 0) + parseFloat(houseInsurance.value || 0) + parseFloat(utilities.value || 0) + parseFloat(phone.value || 0);
+    transportationTotal = parseFloat(carPayment.value || 0) + parseFloat(fuel.value || 0) + parseFloat(carInsurance.value || 0) + parseFloat(repairs.value || 0);
+    educationTotal = parseFloat(tuition.value || 0) + parseFloat(studentLoans.value || 0);
+    personalTotal = parseFloat(food.value || 0) + parseFloat(entertainment.value || 0) + parseFloat(clothing.value || 0) + parseFloat(medical.value || 0);
+    savingsTotal = parseFloat(investments.value || 0) + parseFloat(retirement.value || 0) + parseFloat(emergencyFund.value || 0);
+    // total spent
+    const total_spent = housingTotal + transportationTotal + educationTotal + personalTotal + savingsTotal;
+
+    // net income
+    const net = income-total_spent;
+    if (net > 0) {
+        netIncome.classList.remove('negative');
+        netIncome.classList.add('positve');
+    } else {
+        netIncome.classList.remove('positive');
+        netIncome.classList.add('negative');
+    }
+    netIncome.textContent = `${Math.floor(net).toFixed(2)}`;
 });
 
 // Categorizing input fields per page based on whether they fill out wants, needs, or savings
 const needs = /** @type {NodeListOf<HTMLInputElement>} */ (
-    // Pages 1-4 are needs
     document.querySelectorAll('.need-input')
-    // ':is(.page-1, .page-2, .page-3, .page-4) > input:not([placeholder=Entertainment])'
 );
 
 const wants = /** @type {NodeListOf<HTMLInputElement>} */ (
-    // Page 6 is wants
     document.querySelectorAll('.want-input')
-    // 'input[placeholder=Entertainment], .page-6 > input'
 );
 
 
 const savings = /** @type {NodeListOf<HTMLInputElement>} */ (
-    // Page 5 is savings
     document.querySelectorAll('.saving-input')
 );
 
@@ -125,31 +137,6 @@ function sumInputValues(form) {
 // BTW forms is declared in navigation.js
 sumInputValues(forms.children[0])
 
-const canvas = document.querySelector('canvas');
-let current_chart = null;
-
-function update() {
-    current_chart?.destroy();
-    current_chart = new Chart(canvas, {
-        type: 'doughnut',
-        data: {
-            labels: ['Housing', 'Transportation', 'Education', 'Lifestyle', 'Savings'],
-            datasets: [
-                {
-                    label: 'Monthly (USD)',
-                    data: total
-                }
-            ]
-        }
-    });
-}
-
-// Whenever you input something, update donut chart
-document.body.addEventListener('input', () => {
-    update();
-});
-
-
 //API Career List
 async function careerSelector() {
     const selectElement = document.getElementById('career-list');
@@ -168,7 +155,8 @@ async function careerSelector() {
         });
 
         selectElement.addEventListener('change', () => {
-            salary.textContent = occupationSalaryMap.get(selectElement.value) || '';
+            income = occupationSalaryMap.get(selectElement.value);
+            salary.textContent = `Gross Salary: $${occupationSalaryMap.get(selectElement.value)}` || '';
         });
     } catch (error) {
         console.error('Error populating user select:', error);
@@ -178,50 +166,77 @@ async function careerSelector() {
 careerSelector();
 
 //Pie Chart
-function buildChart() {
-    const taxes = income * 0.1; //Temporary tax value
-    console.log(housingTotal);
 
-    const labels = ['Taxes', 'Housing', 'Transportation', 'Education', 'Lifestyle', 'Future Proofing'];
-    const data = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal];
+// const canvas = document.querySelector('canvas');
+// let current_chart = null;
 
-    return {
-        type: 'doughnut',
-        data: {
-            labels,
-            datasets: [{
-                label: 'Monthly (USD)',
-                data,
-                backgroundColor: [
-                    '#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C', '#537FF1'
-                ]
-            }]
-        },
-        options: {
-            plugins: {
-                title: { display: true, text: `Spending Overview` }
-            }
-        }
-    };
-}
+// function buildChart() {
+//     const taxes = income * 0.1; //Temporary tax value
 
-function initChart() {
-    const ctx = canvas.getContext('2d');
-    const cfg = buildChart();
-    return new Chart(ctx, cfg);
-}
+//     const labels = ['Taxes', 'Housing', 'Transportation', 'Education', 'Lifestyle', 'Future Proofing'];
+//     const data = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal];
+//     console.log(data);
 
-let chartInstance;
+//     return {
+//         type: 'doughnut',
+//         data: {
+//             labels,
+//             datasets: [{
+//                 label: 'Monthly (USD)',
+//                 data: data,
+//                 backgroundColor: [
+//                     '#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C', '#537FF1'
+//                 ]
+//             }]
+//         },
+//         options: {
+//             plugins: {
+//                 title: { display: true, text: `Spending Overview` }
+//             }
+//         }
+//     };
+// }
 
-function refreshChart() {
-    if (chartInstance) {
-        chartInstance.destroy(); // Destroy the existing chart
-    }
-    chartInstance = initChart(); // Reinitialize the chart
-}
+// function initChart() {
+//     const ctx = canvas.getContext('2d');
+//     const cfg = buildChart();
+//     return new Chart(ctx, cfg);
+// }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initChart();
-});
+// let chartInstance;
 
-initChart();
+// function refreshChart() {
+//     if (chartInstance) {
+//         chartInstance.destroy(); // Destroy the existing chart
+//     }
+//     chartInstance = initChart(); // Reinitialize the chart
+// }
+
+// function update() {
+//     const taxes = income * 0.1 // Temp
+//     const data = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal]
+//     current_chart?.destroy();
+//     current_chart = new Chart(canvas, {
+//         type: 'doughnut',
+//         data: {
+//             labels: ['Housing', 'Transportation', 'Education', 'Lifestyle', 'Savings'],
+//             datasets: [
+//                 {
+//                     label: 'Monthly (USD)',
+//                     data: data
+//                 }
+//             ]
+//         }
+//     });
+// }
+
+// // Whenever you input something, update donut chart
+// document.body.addEventListener('input', () => {
+//     update();
+// });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     initChart();
+// });
+
+// initChart();

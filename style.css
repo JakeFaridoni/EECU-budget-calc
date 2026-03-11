@@ -6,10 +6,6 @@
     --transition: 0.3s ease-in-out;
 }
 
-*{
-    
-}
-
 body {
     overflow-y: hidden;
     background-color: var(--primary-white);
@@ -46,7 +42,24 @@ button:hover {
 
     & #netIncome {
         font-size: 20px;
+
+        & .positive {
+            color: lightgreen;
+        }
+
+        & .negative {
+            color: red;
+        }
     }
+}
+
+#grossSalary {
+    width: fit-content;
+    padding: 1rem;
+    padding-bottom: 0.25rem;
+    font-family: var(--font-main);
+    border-bottom: 1px solid black;
+    font-size: 20px;
 }
 
 nav ul {
@@ -79,8 +92,9 @@ nav ul li {
     padding: 1rem 2rem;
     /* May need to change to fix dimensions of whatever words apepar */
     border-radius: 10px;
+
     /* Doesn't work */
-    &.logo > a {
+    &.logo>a {
         width: max-content;
         height: max-content;
         background-image: url(images\logo.png);
@@ -222,33 +236,34 @@ input {
     border-radius: 10px;
     width: 25em;
     height: 7.5em;
+
     & * {
         margin: -2px;
         background-color: var(--primary-white);
     }
 
-    
+
 }
 
-thead:not(:first-child){
-        color: var(--primary-white);
-        background-color: var(--primary-blue);
-    }
+thead:not(:first-child) {
+    color: var(--primary-white);
+    background-color: var(--primary-blue);
+}
 
-th:first-child{
+th:first-child {
     border-top-left-radius: 9px;
 }
 
-th:last-child{
+th:last-child {
     border-top-right-radius: 9px;
 }
 
-#BLCorner{
+#BLCorner {
     border-bottom-left-radius: 9px;
 
 }
 
-#BRCorner{
+#BRCorner {
     border-bottom-right-radius: 9px;
 }
 
@@ -256,8 +271,8 @@ th:last-child{
     color: var(--primary-white);
     background-color: var(--primary-blue);
     border-radius: 10px;
-    
-   
+
+
 }
 
 /*Specific page designs*/
@@ -267,6 +282,7 @@ th:last-child{
     flex-direction: column;
     gap: 1rem;
     padding-bottom: 1rem;
+
     &>select {
         border: 2px solid black;
         border-radius: 10px;
