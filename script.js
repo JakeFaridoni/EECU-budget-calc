@@ -2,11 +2,13 @@ import './navigation.js';
 
 //Const List
 const salary = document.getElementById('grossSalary');
+const monthly_salary = document.getElementById('monthlySalary');
 let income = parseFloat(salary.value) || 0;
 const table = document.querySelector('table.needs-wants-savings');
 const netIncome = document.querySelector("#netIncome");
 const estimated = table.querySelector('tbody > tr');
 const spent = estimated.nextElementSibling;
+let total_spent = 0;
 
 //Housing Variables
 const mortage = document.querySelector('input[placeholder="Mortage"]');
@@ -56,19 +58,9 @@ addEventListener('input', () => {
     educationTotal = parseFloat(tuition.value || 0) + parseFloat(studentLoans.value || 0);
     personalTotal = parseFloat(food.value || 0) + parseFloat(entertainment.value || 0) + parseFloat(clothing.value || 0) + parseFloat(medical.value || 0);
     savingsTotal = parseFloat(investments.value || 0) + parseFloat(retirement.value || 0) + parseFloat(emergencyFund.value || 0);
-    // total spent
-    const total_spent = housingTotal + transportationTotal + educationTotal + personalTotal + savingsTotal;
 
-    // net income
-    const net = income-total_spent;
-    if (net > 0) {
-        netIncome.classList.remove('negative');
-        netIncome.classList.add('positve');
-    } else {
-        netIncome.classList.remove('positive');
-        netIncome.classList.add('negative');
-    }
-    netIncome.textContent = `${Math.floor(net).toFixed(2)}`;
+    // total spent
+    total_spent = housingTotal + educationTotal + transportationTotal + personalTotal + savingsTotal;
 });
 
 // Categorizing input fields per page based on whether they fill out wants, needs, or savings
@@ -156,7 +148,23 @@ async function careerSelector() {
 
         selectElement.addEventListener('change', () => {
             income = occupationSalaryMap.get(selectElement.value);
-            salary.textContent = `Gross Salary: $${occupationSalaryMap.get(selectElement.value)}` || '';
+            salary.textContent = `Gross Salary: $${income}` || '';
+
+            let monthly_income = Math.floor(income / 12).toFixed(2);
+            monthly_salary.textContent = `Monthly Salary: $${monthly_income}` || '';
+
+            // net income
+            const net = Math.floor(income - total_spent).toFixed(2);
+            if (net > 0) {
+                netIncome.classList.remove('negative');
+                netIncome.classList.add('positive');
+            } else if (net < 0) {
+                netIncome.classList.remove('positive');
+                netIncome.classList.add('negative');
+            } else {
+                netIncome.classList.remove('positive', 'negative');
+            }
+            netIncome.textContent = `${net}`;
         });
     } catch (error) {
         console.error('Error populating user select:', error);
@@ -167,76 +175,38 @@ careerSelector();
 
 //Pie Chart
 
-// const canvas = document.querySelector('canvas');
-// let current_chart = null;
+const canvas = document.querySelector('#chartCanvas');
+let current_chart = null;
 
-// function buildChart() {
-//     const taxes = income * 0.1; //Temporary tax value
+function buildChartConfig() {
+    const taxes = income * 0.1;
+    return {
+        type: 'doughnut',
+        data: {
+            labels: ['Taxes', 'Housing', 'Transportation', 'Education', 'Personal', 'Savings'],
+            datasets: [{
+                label: 'Monthly (USD)',
+                data: [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal],
+                backgroundColor: ['#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C', '#537FF1', '#4CAF50']
+            }]
+        },
+        options: {
+            animation: false,
+            plugins: {
+                title: { display: true, text: 'Spending Overview' }
 
-//     const labels = ['Taxes', 'Housing', 'Transportation', 'Education', 'Lifestyle', 'Future Proofing'];
-//     const data = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal];
-//     console.log(data);
+            }
+        }
+    };
+}
 
-//     return {
-//         type: 'doughnut',
-//         data: {
-//             labels,
-//             datasets: [{
-//                 label: 'Monthly (USD)',
-//                 data: data,
-//                 backgroundColor: [
-//                     '#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C', '#537FF1'
-//                 ]
-//             }]
-//         },
-//         options: {
-//             plugins: {
-//                 title: { display: true, text: `Spending Overview` }
-//             }
-//         }
-//     };
-// }
+function refreshChart() {
+    if (current_chart) {
+        current_chart.destroy();
+    }
+    current_chart = new Chart(canvas.getContext('2d'), buildChartConfig());
+}
 
-// function initChart() {
-//     const ctx = canvas.getContext('2d');
-//     const cfg = buildChart();
-//     return new Chart(ctx, cfg);
-// }
+document.body.addEventListener('input', refreshChart);
 
-// let chartInstance;
-
-// function refreshChart() {
-//     if (chartInstance) {
-//         chartInstance.destroy(); // Destroy the existing chart
-//     }
-//     chartInstance = initChart(); // Reinitialize the chart
-// }
-
-// function update() {
-//     const taxes = income * 0.1 // Temp
-//     const data = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal]
-//     current_chart?.destroy();
-//     current_chart = new Chart(canvas, {
-//         type: 'doughnut',
-//         data: {
-//             labels: ['Housing', 'Transportation', 'Education', 'Lifestyle', 'Savings'],
-//             datasets: [
-//                 {
-//                     label: 'Monthly (USD)',
-//                     data: data
-//                 }
-//             ]
-//         }
-//     });
-// }
-
-// // Whenever you input something, update donut chart
-// document.body.addEventListener('input', () => {
-//     update();
-// });
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     initChart();
-// });
-
-// initChart();
+refreshChart(); // initial render
