@@ -3,12 +3,12 @@ import './navigation.js';
 //Const List
 const salary = document.getElementById('grossSalary');
 const monthly_salary = document.getElementById('monthlySalary');
-let income = parseFloat(salary.value) || 0;
 const table = document.querySelector('table.needs-wants-savings');
 const netIncome = document.querySelector("#netIncome");
 const estimated = table.querySelector('tbody > tr');
 const spent = estimated.nextElementSibling;
 let total_spent = 0;
+let income = parseFloat(salary.value) || 0;
 
 //Housing Variables
 const mortage = document.querySelector('input[placeholder="Mortage"]');
@@ -44,14 +44,7 @@ const retirement = document.querySelector('input[placeholder="Retirement"]');
 const emergencyFund = document.querySelector('input[placeholder="Emergency Fund"]');
 let savingsTotal = 0;
 
-const customExpenses = document.querySelectorAll('input[placeholder="Custom"]');
-
 addEventListener('input', () => {
-    // 50-30-20 split
-    estimated.children.item(1).textContent = (income * 0.5).toFixed(2);
-    estimated.children.item(2).textContent = (income * 0.3).toFixed(2);
-    estimated.children.item(3).textContent = (income * 0.2).toFixed(2);
-
     // find totals
     housingTotal = parseFloat(mortage.value || 0) + parseFloat(rent.value || 0) + parseFloat(maintenance.value || 0) + parseFloat(houseInsurance.value || 0) + parseFloat(utilities.value || 0) + parseFloat(phone.value || 0);
     transportationTotal = parseFloat(carPayment.value || 0) + parseFloat(fuel.value || 0) + parseFloat(carInsurance.value || 0) + parseFloat(repairs.value || 0);
@@ -61,6 +54,8 @@ addEventListener('input', () => {
 
     // total spent
     total_spent = housingTotal + educationTotal + transportationTotal + personalTotal + savingsTotal;
+
+    updateNetIncome();
 });
 
 // Categorizing input fields per page based on whether they fill out wants, needs, or savings
@@ -103,7 +98,7 @@ function makeInputsWork(category, category_values, spent_on_category, columnInde
 
                 // Add to total money in needs and put that value into the first column of spent row
                 spent_on_category = category_values.values().reduce((a, b) => a + b, 0);
-                spent.children.item(columnIndex).textContent = spent_on_category.toFixed(2);
+                spent.children.item(columnIndex).textContent = spent_on_category ? spent_on_category.toFixed(2) : '0.00';
             }
         );
     }
@@ -112,22 +107,6 @@ function makeInputsWork(category, category_values, spent_on_category, columnInde
 makeInputsWork(needs, needs_values, spent_on_needs, 1);
 makeInputsWork(wants, wants_values, spent_on_wants, 2);
 makeInputsWork(savings, savings_values, spent_on_savings, 3);
-
-// Pie Chart
-
-// Summation of values per category
-
-function sumInputValues(form) {
-    const formClass = form.classList[1]
-    // Get the inputs of the desired form
-    const inputsElement = document.querySelectorAll(`.${formClass} .inputs`)
-
-    // Convert inputsElement into an array containing its children and iterate through them
-    // For each iteration, add to a total
-}
-
-// BTW forms is declared in navigation.js
-sumInputValues(forms.children[0])
 
 //API Career List
 async function careerSelector() {
@@ -148,53 +127,96 @@ async function careerSelector() {
 
         selectElement.addEventListener('change', () => {
             income = occupationSalaryMap.get(selectElement.value);
-            salary.textContent = `Gross Salary: $${income}` || '';
+            salary.textContent = income ? `Gross Salary: $${income}` : 'Gross Salary: $0';
 
             let monthly_income = Math.floor(income / 12).toFixed(2);
-            monthly_salary.textContent = `Monthly Salary: $${monthly_income}` || '';
+            monthly_salary.textContent = income ? `Monthly Salary: $${monthly_income}` : 'Monthly Salary: $0';
 
-            // net income
-            const net = Math.floor(income - total_spent).toFixed(2);
-            if (net > 0) {
-                netIncome.classList.remove('negative');
-                netIncome.classList.add('positive');
-            } else if (net < 0) {
-                netIncome.classList.remove('positive');
-                netIncome.classList.add('negative');
-            } else {
-                netIncome.classList.remove('positive', 'negative');
-            }
-            netIncome.textContent = `${net}`;
+            updateNetIncome();
+
+            // 50-30-20 split
+            estimated.children.item(1).textContent = Math.floor(((income - taxCalc(income)) * 0.5)).toFixed(2);
+            estimated.children.item(2).textContent = Math.floor(((income - taxCalc(income)) * 0.3)).toFixed(2);
+            estimated.children.item(3).textContent = Math.floor(((income - taxCalc(income)) * 0.2)).toFixed(2);
         });
     } catch (error) {
         console.error('Error populating user select:', error);
     }
 }
 
+function updateNetIncome() {
+    // net income
+    const net = (income - total_spent - taxCalc(income)) ? Math.floor(income - total_spent - taxCalc(income)).toFixed(2) : '0.00';
+    if (net > 0) {
+        netIncome.classList.remove('negative');
+        netIncome.classList.add('positive');
+        if (netIncome) netIncome.textContent = `$${net}`;
+    } else if (net < 0) {
+        netIncome.classList.remove('positive');
+        netIncome.classList.add('negative');
+        if (netIncome) netIncome.textContent = `-$${net * -1}`;
+    } else {
+        netIncome.classList.remove('positive', 'negative');
+    }
+
+    // Update chart
+    refreshChart();
+};
+
 careerSelector();
 
-//Pie Chart
 
+// Taxes Calculations
+function taxCalc(income) {
+    // Non-deductable
+    const taxable_income = (income - 16100) > 0 ? income - 16100 : 0;
+
+    // Flat rates
+    const medical_tax = income * 0.0145;
+    const social_sec = income * 0.062;
+    const state_tax = income * 0.04;
+
+    const flat_tax = medical_tax + social_sec + state_tax;
+
+    // Progressive taxes
+    income = 100000;
+    let progressive_tax = 0;
+    if (taxable_income > 50400) {
+        progressive_tax = taxable_income * 0.44;
+    } else if (taxable_income >= 12401) {
+        progressive_tax = taxable_income * 0.22;
+    } else {
+        progressive_tax = taxable_income * 0.1;
+    }
+    return progressive_tax + flat_tax;
+};
+
+
+//Pie Chart
 const canvas = document.querySelector('#chartCanvas');
 let current_chart = null;
 
 function buildChartConfig() {
-    const taxes = income * 0.1;
+    const taxes = taxCalc(income);
+    let dataset = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal];
+    dataset = dataset.reduce((a,b) => a + b) ? [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal] : 0;
     return {
         type: 'doughnut',
         data: {
             labels: ['Taxes', 'Housing', 'Transportation', 'Education', 'Personal', 'Savings'],
             datasets: [{
                 label: 'Monthly (USD)',
-                data: [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal],
+                data: dataset,
                 backgroundColor: ['#8979FF', '#FF928A', '#3CC3DF', '#FFAE4C', '#537FF1', '#4CAF50']
             }]
         },
         options: {
             animation: false,
             plugins: {
-                title: { display: true, text: 'Spending Overview' }
-
+                title: { display: true, text: 'Spending Overview' },
+                legend: {
+                    display: dataset
+                }
             }
         }
     };
@@ -209,4 +231,17 @@ function refreshChart() {
 
 document.body.addEventListener('input', refreshChart);
 
-refreshChart(); // initial render
+// Render Chart
+refreshChart();
+
+// Add input
+const add_input_btns = document.querySelectorAll('add-input');
+
+for (const btn of add_input_btns) {
+    btn.addEventListener('click', () => {
+        const new_input = document.createElement('input');
+        const exclude = ['.page-4', '.page-5', '.page-6'];
+        exclude.some(excluded => (document.querySelector(`page-${current_page}`)).classList.includes(excluded));
+        
+    });
+}

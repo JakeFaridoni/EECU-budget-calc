@@ -40,7 +40,7 @@ function navigate(page) {
     }
     current_page = page;
     for (const button of jumpto_section.children) {
-        if (button.id === `step-${current_page}`) {
+        if (button.id <= `step-${current_page}`) {
             button.classList.add('active');
         } else {
             button.classList.remove('active');

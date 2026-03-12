@@ -49,6 +49,7 @@ button:hover {
 
         & .negative {
             color: red;
+            font-weight: bold;
         }
     }
 }
@@ -146,12 +147,13 @@ nav ul li {
             color: var(--primary-white);
         }
 
-        &::after {
+        &::before {
             content: "";
             width: 3rem;
+            background-color: black;
             border: 1px black solid;
             position: absolute;
-            transform: translate(2rem, .5rem);
+            transform: translate(-4.25em, .5em);
         }
 
 
@@ -160,13 +162,18 @@ nav ul li {
     }
 
     /* put down the child */
-    & button:last-child::after {
+    & button:first-child::before {
         display: none;
     }
 
     & .active {
         background-color: var(--primary-blue);
         color: var(--primary-white);
+
+        &::before {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+        }
     }
 }
 
