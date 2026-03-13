@@ -227,7 +227,7 @@ input {
     height: 40px;
 }
 
-.addinput {
+.add-input {
     background-color: var(--primary-blue);
     color: var(--primary-white);
 
@@ -275,12 +275,16 @@ th:last-child {
     border-bottom-right-radius: 9px;
 }
 
+tbody > tr:last-child > td:not(:first-child) {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
 .edit-header {
     color: var(--primary-white);
     background-color: var(--primary-blue);
     border-radius: 10px;
-
-
 }
 
 /*Specific page designs*/

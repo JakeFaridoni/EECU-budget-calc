@@ -1,4 +1,70 @@
-import './navigation.js';
+// import './navigation.js';
+
+let current_page = 0;
+
+const jumpto_section = /** @type {HTMLElement} */ (
+    document.querySelector('section.stepContainer')
+);
+const forms = /** @type {HTMLElement} */ (
+    document.querySelector('section#forms')
+);
+const form_count = forms.querySelectorAll('form').length;
+const next = /** @type {HTMLButtonElement} */ (
+    document.querySelector('#nextForm')
+);
+
+next.addEventListener('click', () => {
+    if (current_page >= form_count - 1) {
+        return;
+    }
+    navigate(current_page + 1);
+    if (current_page >= form_count) {
+        next.classList.add('inactive');
+    }
+});
+
+jumpto_section.addEventListener('click', event => {
+    if (!(event.target instanceof HTMLButtonElement)) {
+        return;
+    }
+    const page = +event.target.id.slice(5);
+    navigate(page);
+});
+
+/**
+ * @param {number} page
+ */
+function navigate(page) {
+    if (current_page === page) {
+        return;
+    }
+    current_page = page;
+    for (const button of jumpto_section.children) {
+        if (button.id <= `step-${current_page}`) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    }
+    for (const form of forms.children) {
+        if (!(form instanceof HTMLFormElement)) {
+            continue;
+        }
+        if (form.classList.contains(`page-${current_page}`)) {
+            form.classList.remove('inactive');
+            form.classList.add('active');
+        } else {
+            form.classList.remove('active');
+            form.classList.add('inactive');
+        }
+    }
+}
+
+
+
+
+
+
 
 //Const List
 const salary = document.getElementById('grossSalary');
@@ -98,7 +164,7 @@ function makeInputsWork(category, category_values, spent_on_category, columnInde
 
                 // Add to total money in needs and put that value into the first column of spent row
                 spent_on_category = category_values.values().reduce((a, b) => a + b, 0);
-                spent.children.item(columnIndex).textContent = spent_on_category ? spent_on_category.toFixed(2) : '0.00';
+                spent.children.item(columnIndex).textContent = spent_on_category ? `-$${Math.floor(spent_on_category).toFixed(2)}` : '-$0.00';
             }
         );
     }
@@ -199,7 +265,7 @@ let current_chart = null;
 function buildChartConfig() {
     const taxes = taxCalc(income);
     let dataset = [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal];
-    dataset = dataset.reduce((a,b) => a + b) ? [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal] : 0;
+    dataset = dataset.reduce((a, b) => a + b) ? [taxes, housingTotal, transportationTotal, educationTotal, personalTotal, savingsTotal] : 0;
     return {
         type: 'doughnut',
         data: {
@@ -235,13 +301,21 @@ document.body.addEventListener('input', refreshChart);
 refreshChart();
 
 // Add input
-const add_input_btns = document.querySelectorAll('add-input');
-
-for (const btn of add_input_btns) {
-    btn.addEventListener('click', () => {
-        const new_input = document.createElement('input');
-        const exclude = ['.page-4', '.page-5', '.page-6'];
-        exclude.some(excluded => (document.querySelector(`page-${current_page}`)).classList.includes(excluded));
-        
+const add_input_btns = document.querySelectorAll('.add-input');
+const include = [1, 2, 3];
+const included_btns = [];
+include.forEach(included => {
+    included_btns.push(forms.querySelector(`.page-${included} .add-input`));
+    included_btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const new_input = document.createElement('input');
+            new_input.classList.add('need-input');
+            new_input.type = 'number';
+            new_input.placeholder = 'New Input';
+            forms.querySelector(`.page-${included} .inputs`).append(new_input);
+            new_input.addEventListener('input', () => {
+                new_input.value *= 10;
+            });
+        });
     });
-}
+});
