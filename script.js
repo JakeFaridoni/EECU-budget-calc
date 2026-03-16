@@ -1,4 +1,5 @@
 // -- Consts & Variables --
+// (No Man's Land)
 
 // Landing Page 
 const salary = document.getElementById('grossSalary');
