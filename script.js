@@ -111,7 +111,6 @@ const emergencyFund = document.querySelector('input[placeholder="Emergency Fund"
 let savingsTotal = 0;
 
 addEventListener('input', () => {
-    // find totals
     housingTotal = parseFloat(mortage.value || 0) + parseFloat(rent.value || 0) + parseFloat(maintenance.value || 0) + parseFloat(houseInsurance.value || 0) + parseFloat(utilities.value || 0) + parseFloat(phone.value || 0);
     transportationTotal = parseFloat(carPayment.value || 0) + parseFloat(fuel.value || 0) + parseFloat(carInsurance.value || 0) + parseFloat(repairs.value || 0);
     educationTotal = parseFloat(tuition.value || 0) + parseFloat(studentLoans.value || 0);
@@ -122,6 +121,7 @@ addEventListener('input', () => {
     total_spent = housingTotal + educationTotal + transportationTotal + personalTotal + savingsTotal;
 
     updateNetIncome();
+    saveInputs();
 });
 
 // Categorizing input fields per page based on whether they fill out wants, needs, or savings
@@ -191,6 +191,16 @@ async function careerSelector() {
             selectElement.add(option);
         });
 
+        const savedCareer = localStorage.getItem('career');
+        if (savedCareer) {
+            const match = [...selectElement.options].find(option => option.value === savedCareer);
+            if (match) {
+                selectElement.value = savedCareer;
+                selectElement.dispatchEvent(new Event('change'));
+                updateNetIncome();
+            }
+        }
+
         selectElement.addEventListener('change', () => {
             income = occupationSalaryMap.get(selectElement.value);
             salary.textContent = income ? `Gross Salary: $${income}` : 'Gross Salary: $0';
@@ -199,6 +209,7 @@ async function careerSelector() {
             monthly_salary.textContent = income ? `Monthly Salary: $${monthly_income}` : 'Monthly Salary: $0';
 
             updateNetIncome();
+            saveInputs();
 
             // 50-30-20 split
             estimated.children.item(1).textContent = Math.floor(((income - taxCalc(income)) * 0.5)).toFixed(2);
@@ -229,7 +240,7 @@ function updateNetIncome() {
     refreshChart();
 };
 
-careerSelector();
+careerSelector().then(() => loadInputs());
 
 
 // Taxes Calculations
@@ -300,22 +311,46 @@ document.body.addEventListener('input', refreshChart);
 // Render Chart
 refreshChart();
 
-// Add input
-const add_input_btns = document.querySelectorAll('.add-input');
-const include = [1, 2, 3];
-const included_btns = [];
-include.forEach(included => {
-    included_btns.push(forms.querySelector(`.page-${included} .add-input`));
-    included_btns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const new_input = document.createElement('input');
-            new_input.classList.add('need-input');
-            new_input.type = 'number';
-            new_input.placeholder = 'New Input';
-            forms.querySelector(`.page-${included} .inputs`).append(new_input);
-            new_input.addEventListener('input', () => {
-                new_input.value *= 10;
-            });
-        });
-    });
-});
+// localStorage
+function saveInputs() {
+    const inputs = document.querySelectorAll('input[type="number"]');
+    const saved = {};
+    for (const input of inputs) {
+        if (input.placeholder) {
+            saved[input.placeholder] = input.value;
+        }
+    }
+    localStorage.setItem('inputs', JSON.stringify(saved));
+    localStorage.setItem('income', income);
+    localStorage.setItem('career', (document.getElementById('career-list')).value);
+    localStorage.setItem('page', current_page);
+
+}
+
+function loadInputs() {
+    const savedInputs = localStorage.getItem('inputs');
+    const savedIncome = localStorage.getItem('income');
+    const savedPage = localStorage.getItem('page');
+
+    if (savedIncome) {
+        income = parseFloat(savedIncome);
+    }
+
+    if (savedInputs) {
+        const input_values = JSON.parse(savedInputs);
+        const inputs = document.querySelectorAll('input[type="number"]');
+
+        for (const input of inputs) {
+            if (input_values[input.placeholder]) {
+                input.value = input_values[input.placeholder];
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+    }
+
+    if(savedPage) {
+        navigate(parseInt(savedPage));
+    }
+
+    updateNetIncome();
+}
