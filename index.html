@@ -16,9 +16,9 @@
         <nav>
             <ul>
                 <li class="logo"><a href="#"><img src="images/logo.png" alt="Logo" /></a></li>
-                <li class="home"><a href="#">Home</a></li>
-                <li class="cal"><a href="#">Calculator</a></li>
-                <li class="about"><a href="#">About</a></li>
+                <li class="home mobile-inactive"><a href="#">Home</a></li>
+                <li class="cal mobile-inactive"><a href="#">Calculator</a></li>
+                <li class="about mobile-inactive"><a href="#">About</a></li>
             </ul>
         </nav>
     </header>
@@ -143,7 +143,11 @@
 
                 <!-- Either one button to cycle through steps variable in JS
                     or seperate buttons for each form to go to the next -->
-                <button id="nextForm">Next</button>
+                <span id="form-buttons">
+                    <button id="backForm" class="inactive">Back</button>
+                    <span id="button-divider" class="inactive"></span>
+                    <button id="nextForm">Next</button>
+                </span>
             </section>
         </section>
 

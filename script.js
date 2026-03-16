@@ -1,7 +1,51 @@
-// import './navigation.js';
+// -- Consts & Variables --
 
+// Landing Page 
+const salary = document.getElementById('grossSalary');
+const monthly_salary = document.getElementById('monthlySalary');
+const table = document.querySelector('table.needs-wants-savings');
+const netIncome = document.querySelector("#netIncome");
+const estimated = table.querySelector('tbody > tr');
+const spent = estimated.nextElementSibling;
+let total_spent = 0;
+let income = parseFloat(salary.value) || 0;
+
+// Housing Page
+const mortage = document.querySelector('input[placeholder="Mortage"]');
+const rent = document.querySelector('input[placeholder="Rent"]');
+const maintenance = document.querySelector('input[placeholder="Maintenance"]');
+const houseInsurance = document.querySelector('input[placeholder="House Insurance"]');
+const utilities = document.querySelector('input[placeholder="Utilities"]');
+const phone = document.querySelector('input[placeholder="Phone"]');
+let housingTotal = 0;
+
+// Transportation Page
+const carPayment = document.querySelector('input[placeholder="Car Payment"]');
+const fuel = document.querySelector('input[placeholder="Fuel"]');
+const carInsurance = document.querySelector('input[placeholder="Car Insurance"]');
+const repairs = document.querySelector('input[placeholder="Repairs"]');
+let transportationTotal = 0;
+
+// Education Page
+const tuition = document.querySelector('input[placeholder="Tuition"]');
+const studentLoans = document.querySelector('input[placeholder="Student Loans"]');
+let educationTotal = 0;
+
+// Personal Page
+const food = document.querySelector('input[placeholder="Food"]');
+const entertainment = document.querySelector('input[placeholder="Entertainment"]');
+const clothing = document.querySelector('input[placeholder="Clothing"]');
+const medical = document.querySelector('input[placeholder="Medical"]');
+let personalTotal = 0;
+
+// Savings Page
+const investments = document.querySelector('input[placeholder="Investments"]');
+const retirement = document.querySelector('input[placeholder="Retirement"]');
+const emergencyFund = document.querySelector('input[placeholder="Emergency Fund"]');
+let savingsTotal = 0;
+
+// Navigation Consts & Variables
 let current_page = 0;
-
 const jumpto_section = /** @type {HTMLElement} */ (
     document.querySelector('section.stepContainer')
 );
@@ -12,17 +56,48 @@ const form_count = forms.querySelectorAll('form').length;
 const next = /** @type {HTMLButtonElement} */ (
     document.querySelector('#nextForm')
 );
+const back = /** @type {HTMLButtonElement} */ (
+    document.querySelector('#backForm')
+);
+const button_divider = /** @type {HTMLSpanElement} */ (
+    document.querySelector('#button-divider')
+);
 
+// -- Navigation --
+
+// Switches to next page when next btn is clicked
 next.addEventListener('click', () => {
     if (current_page >= form_count - 1) {
         return;
     }
     navigate(current_page + 1);
-    if (current_page >= form_count) {
+    if (current_page >= form_count - 1) {
         next.classList.add('inactive');
+        button_divider.classList.add('inactive');
+    } else {
+        back.classList.remove('inactive');
+        button_divider.classList.remove('inactive');
     }
 });
 
+
+// Switches to previous page when back button is pushed
+back.addEventListener('click', () => {
+    if (current_page <= 0) {
+        return;
+    }
+    navigate(current_page - 1);
+    if (!current_page) {
+        back.classList.add('inactive');
+        button_divider.classList.add('inactive');
+    }
+    else {
+        next.classList.remove('inactive');
+        button_divider.classList.remove('inactive');
+    }
+});
+
+// Jumps to page when page btn is pushed
 jumpto_section.addEventListener('click', event => {
     if (!(event.target instanceof HTMLButtonElement)) {
         return;
@@ -31,6 +106,7 @@ jumpto_section.addEventListener('click', event => {
     navigate(page);
 });
 
+// navigate helper function to navigate to different pages
 /**
  * @param {number} page
  */
@@ -60,55 +136,7 @@ function navigate(page) {
     }
 }
 
-
-
-
-
-
-
-//Const List
-const salary = document.getElementById('grossSalary');
-const monthly_salary = document.getElementById('monthlySalary');
-const table = document.querySelector('table.needs-wants-savings');
-const netIncome = document.querySelector("#netIncome");
-const estimated = table.querySelector('tbody > tr');
-const spent = estimated.nextElementSibling;
-let total_spent = 0;
-let income = parseFloat(salary.value) || 0;
-
-//Housing Variables
-const mortage = document.querySelector('input[placeholder="Mortage"]');
-const rent = document.querySelector('input[placeholder="Rent"]');
-const maintenance = document.querySelector('input[placeholder="Maintenance"]');
-const houseInsurance = document.querySelector('input[placeholder="House Insurance"]');
-const utilities = document.querySelector('input[placeholder="Utilities"]');
-const phone = document.querySelector('input[placeholder="Phone"]');
-let housingTotal = 0;
-
-//Transportation Variables
-const carPayment = document.querySelector('input[placeholder="Car Payment"]');
-const fuel = document.querySelector('input[placeholder="Fuel"]');
-const carInsurance = document.querySelector('input[placeholder="Car Insurance"]');
-const repairs = document.querySelector('input[placeholder="Repairs"]');
-let transportationTotal = 0;
-
-//Education Variables
-const tuition = document.querySelector('input[placeholder="Tuition"]');
-const studentLoans = document.querySelector('input[placeholder="Student Loans"]');
-let educationTotal = 0;
-
-//Personal Variables
-const food = document.querySelector('input[placeholder="Food"]');
-const entertainment = document.querySelector('input[placeholder="Entertainment"]');
-const clothing = document.querySelector('input[placeholder="Clothing"]');
-const medical = document.querySelector('input[placeholder="Medical"]');
-let personalTotal = 0;
-
-//Savings Variables
-const investments = document.querySelector('input[placeholder="Investments"]');
-const retirement = document.querySelector('input[placeholder="Retirement"]');
-const emergencyFund = document.querySelector('input[placeholder="Emergency Fund"]');
-let savingsTotal = 0;
+// -- Inputs --
 
 addEventListener('input', () => {
     housingTotal = parseFloat(mortage.value || 0) + parseFloat(rent.value || 0) + parseFloat(maintenance.value || 0) + parseFloat(houseInsurance.value || 0) + parseFloat(utilities.value || 0) + parseFloat(phone.value || 0);
@@ -117,7 +145,7 @@ addEventListener('input', () => {
     personalTotal = parseFloat(food.value || 0) + parseFloat(entertainment.value || 0) + parseFloat(clothing.value || 0) + parseFloat(medical.value || 0);
     savingsTotal = parseFloat(investments.value || 0) + parseFloat(retirement.value || 0) + parseFloat(emergencyFund.value || 0);
 
-    // total spent
+    // Update total spent
     total_spent = housingTotal + educationTotal + transportationTotal + personalTotal + savingsTotal;
 
     updateNetIncome();
@@ -174,6 +202,8 @@ makeInputsWork(needs, needs_values, spent_on_needs, 1);
 makeInputsWork(wants, wants_values, spent_on_wants, 2);
 makeInputsWork(savings, savings_values, spent_on_savings, 3);
 
+// -- Career --
+
 //API Career List
 async function careerSelector() {
     const selectElement = document.getElementById('career-list');
@@ -221,9 +251,19 @@ async function careerSelector() {
     }
 }
 
+// Scuffed but fixes the Gross/Monthly salary updating
+careerSelector().then(() => {
+    loadInputs();
+    careerSelector();
+});
+
+// -- Net Income --
+
 function updateNetIncome() {
     // net income
     const net = (income - total_spent - taxCalc(income)) ? Math.floor(income - total_spent - taxCalc(income)).toFixed(2) : '0.00';
+
+    // Changes styling based on net income
     if (net > 0) {
         netIncome.classList.remove('negative');
         netIncome.classList.add('positive');
@@ -240,8 +280,7 @@ function updateNetIncome() {
     refreshChart();
 };
 
-careerSelector().then(() => loadInputs());
-
+// -- Taxes --
 
 // Taxes Calculations
 function taxCalc(income) {
@@ -269,7 +308,7 @@ function taxCalc(income) {
 };
 
 
-//Pie Chart
+// -- Pie Chart --
 const canvas = document.querySelector('#chartCanvas');
 let current_chart = null;
 
@@ -311,15 +350,19 @@ document.body.addEventListener('input', refreshChart);
 // Render Chart
 refreshChart();
 
-// localStorage
+// -- localStorage --
+
 function saveInputs() {
     const inputs = document.querySelectorAll('input[type="number"]');
+    // Empty array --> populate with saved inputs names & values
     const saved = {};
     for (const input of inputs) {
         if (input.placeholder) {
             saved[input.placeholder] = input.value;
         }
     }
+
+    // Saves inputs and  the currently selected page to local storage
     localStorage.setItem('inputs', JSON.stringify(saved));
     localStorage.setItem('income', income);
     localStorage.setItem('career', (document.getElementById('career-list')).value);
@@ -328,14 +371,17 @@ function saveInputs() {
 }
 
 function loadInputs() {
+    // Grabs inputs and page from local storage
     const savedInputs = localStorage.getItem('inputs');
     const savedIncome = localStorage.getItem('income');
     const savedPage = localStorage.getItem('page');
 
+    // Updates income from local storage
     if (savedIncome) {
         income = parseFloat(savedIncome);
     }
 
+    // Populates input fields with inputs from local storage
     if (savedInputs) {
         const input_values = JSON.parse(savedInputs);
         const inputs = document.querySelectorAll('input[type="number"]');
@@ -348,9 +394,11 @@ function loadInputs() {
         }
     }
 
+    // Changes page to saved page
     if(savedPage) {
         navigate(parseInt(savedPage));
     }
 
+    // Performs net income calc & refreshes chart
     updateNetIncome();
 }
